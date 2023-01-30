@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>GlobalSlacking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Comic Neue', cursive;
+
+            background: #47305a;
+            color: white;
+
+            height: 140px;
+            width: 210px;
+
+            user-select: none;
+
+            border: 5px solid #ed6a3e;
+            border-radius: 1px;
+
+            padding: 0;
+            margin: 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: center;
+
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3em;
+        }
+
+        .content {
+            height: 69px;
+        }
+
+        .content,
+        #timerContainer {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        #timerContainer {
+            display: none;
+        }
+
+        #timer,
+        #runBtn,
+        #message {
+            color: white;
+        }
+
+        #timerContainer,
+        #runBtn {
+            background: #47305a;
+            /* background: radial-gradient(circle, rgba(71, 48, 90, 1) 0%, rgba(237, 106, 62, 1) 100%); */
+
+            border: #ed6a3e 1px solid;
+            border-radius: 50%;
+            box-shadow: 0px 0px 42px -7px #ed6a3e;
+
+            height: 69px;
+            width: 69px;
+
+            padding: 0;
+            margin: 0;
+
+            position: absolute;
+            justify-self: center;
+            align-self: center;
+        }
+
+        #runBtn {
+            cursor: pointer;
+            transition-duration: 0.2s;
+        }
+
+        #runBtn:hover {
+            background: #ed6a3e;
+
+            font-weight: bold;
+            letter-spacing: 5px;
+
+            border: #47305a 1px solid;
+        }
+
+        #runBtn:active {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body style='min-width: 210px; text-align: center'>
+
+    <h4>GlobalSlacking</h4>
+
+    <div class="content">
+        <button type='button' id='runBtn'>Lesgo</button>
+
+        <div id="timerContainer">
+            <p id='timer' />
+        </div>
+    </div>
+    <span id='message' />
+    <script src='popup.js'></script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+{
+    "name": "GlobalSlacking",
+    "description": "Ca slack fort ici",
+    "manifest_version": 3,
+    "version": "6.9",
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab"
+    ],
+    "action": {
+        "default_popup": "popup/popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": [
+                "script.js"
+            ]
+        }
+    ]
+}
