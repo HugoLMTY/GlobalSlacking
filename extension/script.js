@@ -16,6 +16,8 @@ async function run()
         fill: {
             title: 'p.font-bold',
             questions: 'lg:mb-6',
+            title: 'span',
+            propositions: 'label.flex.items-center',
             showAnswer: 'span.mr-2',
             correctAnswer: 'bg-success-05',
             validate: [
@@ -45,19 +47,51 @@ async function run()
 
     const pickAnswer = async ({ question, type }) =>
     {
-        const isFill = type === 'fill'
+        await sleep(250);
+        const title = question.querySelector(selectors[type].title).innerText
+        question
+            .querySelector(selectors[type].title)
+            .scrollIntoView({ block: 'center' });
 
-        //? Scroll to the next question
-        const el = isFill ? question : document
-        if (isFill) el.scrollIntoView({ block: 'center' });
-        await sleep(1000);
+        const propositions = []
+        question
+            .querySelectorAll("label.flex.items-center")
+            .forEach((el) => { propositions.push(el.innerText.replace('\n', ' ').trim()) })
 
-        el.querySelector(selectors[type].showAnswer).click();
-        await sleep(1000);
+        const prompt = `Quelle réponse correspond grammaticalement, sans contexte ?\n\n${title}\n\n${propositions.join(', ')}.`
+            .replaceAll(' ', '_')
+            .replaceAll('\n', '_n_')
+            .replaceAll('?', '_question_mark_')
 
-        //? Pick answer + hide correction (for detection in text stuff)
-        question.getElementsByClassName(selectors[type].correctAnswer)[0]?.click();
-        el.querySelector(selectors[type].showAnswer).click();
+        const response = await fetch('http://localhost:3000/' + prompt, { method: 'GET' })
+            .then((res) => res.json())
+
+
+        const answer = /[A-Z]\./.exec(response.answer);
+        const index = propositions.findIndex((el) => el.includes(answer))
+
+        // console.log({ propositions, answer, index })
+        question
+            .querySelectorAll(selectors[type].propositions)[index]
+            ?.click()
+
+
+
+
+
+        // const isFill = type === 'fill'
+
+        // //? Scroll to the next question
+        // const el = isFill ? question : document
+        // if (isFill) el.scrollIntoView({ block: 'center' });
+        // await sleep(1000);
+
+        // el.querySelector(selectors[type].showAnswer).click();
+        // await sleep(1000);
+
+        // //? Pick answer + hide correction (for detection in text stuff)
+        // question.getElementsByClassName(selectors[type].correctAnswer)[0]?.click();
+        // el.querySelector(selectors[type].showAnswer).click();
 
         return await sleep(420);;
     }
@@ -75,6 +109,7 @@ async function run()
     await sleep(1690);
     console.log('Picking answers...');
 
+    // for (let i = 0; i < 1; i++) {
     for (let i = 0; i < questions.length; i++) {
         await pickAnswer({ question: questions[i], type });
         console.log(`Answered ${i + 1}/${questions.length}`);

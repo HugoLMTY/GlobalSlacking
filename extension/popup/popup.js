@@ -46,13 +46,13 @@ tabs.query(tquery, (tabs) =>
         return (hideEl(els.runBtn), setMsg('t pas au bon endroit boloss'));
     }
 
-    local.get(['status'], async (result) =>
-    {
-        if (result.status === 'on') {
-            showEl(els.timerContainer);
-            return timerLoop();
-        }
-    })
+    // local.get(['status'], async (result) =>
+    // {
+    //     if (result.status === 'on') {
+    //         showEl(els.timerContainer);
+    //         return timerLoop();
+    //     }
+    // })
 
 });
 
@@ -62,7 +62,7 @@ els.runBtn.addEventListener('click', async () =>
     try {
         local.get(['status'], async (result) =>
         {
-            if (result.status === 'on') return setMsg('ca tourne deja du calme');
+            // if (result.status === 'on') return setMsg('ca tourne deja du calme');
 
             setMsg('');
             const [tab] = await tabs.query(tquery);
