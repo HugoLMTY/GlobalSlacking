@@ -46,23 +46,24 @@ tabs.query(tquery, (tabs) =>
         return (hideEl(els.runBtn), setMsg('t pas au bon endroit boloss'));
     }
 
-    // local.get(['status'], async (result) =>
-    // {
-    //     if (result.status === 'on') {
-    //         showEl(els.timerContainer);
-    //         return timerLoop();
-    //     }
-    // })
+    local.get(['status'], async (result) =>
+    {
+        if (result.status === 'on') {
+            showEl(els.timerContainer);
+            return timerLoop();
+        }
+    })
 
 });
 
 //? Set le click
 els.runBtn.addEventListener('click', async () =>
 {
+    // TODO => Fix la pastille qui affiche tjr ON quand le script a fini de tourner 
     try {
         local.get(['status'], async (result) =>
         {
-            // if (result.status === 'on') return setMsg('ca tourne deja du calme');
+            if (result.status === 'on') return setMsg('ca tourne deja du calme');
 
             setMsg('');
             const [tab] = await tabs.query(tquery);
