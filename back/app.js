@@ -28,21 +28,21 @@ app.get('/:prompt', async (req, res) =>
             .replace('_question_mark_', '?');
 
         // const prompt = "Quelle_réponse correspond grammaticalement, sans contexte au trou noté ------- dans le texte suivant _question_mark_The hostess is required to ------- people according to their reservations.A. sit, B. seat, C. stand, D. hire";
-        console.log({ prompt })
+        // console.log({ prompt })
         const response = await openai.createCompletion({
             model: 'text-davinci-003',
             prompt,
             temperature: 0.7,
         });
 
-        console.log({ r: response.data.choices })
+        // console.log({ r: response.data.choices })
         const answer = response.data.choices[0].text
-        console.log({ answer })
+        // console.log({ answer })
 
         res.send({ answer })
 
     } catch (err) {
-        console.log(err.response);
+        console.log(err);
         res.send(false);
     }
 });

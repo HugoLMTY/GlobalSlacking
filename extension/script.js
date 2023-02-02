@@ -47,53 +47,66 @@ async function run()
 
     const pickAnswer = async ({ question, type }) =>
     {
-        await sleep(250);
-        const title = question.querySelector(selectors[type].title).innerText
-        question
-            .querySelector(selectors[type].title)
-            .scrollIntoView({ block: 'center' });
+        const useGPT = true;
+        if (useGPT) {
+            try {
+                await sleep(250);
+                const title = question.querySelector(selectors[type].title).innerText
+                question
+                    .querySelector(selectors[type].title)
+                    .scrollIntoView({ block: 'center' });
 
-        const propositions = []
-        question
-            .querySelectorAll("label.flex.items-center")
-            .forEach((el) => { propositions.push(el.innerText.replace('\n', ' ').trim()) })
+                const propositions = []
+                question
+                    .querySelectorAll("label.flex.items-center")
+                    .forEach((el) => { propositions.push(el.innerText.replace('\n', ' ').trim()) })
 
-        const prompt = `Quelle réponse correspond grammaticalement, sans contexte ?\n\n${title}\n\n${propositions.join(', ')}.`
-            .replaceAll(' ', '_')
-            .replaceAll('\n', '_n_')
-            .replaceAll('?', '_question_mark_')
+                const prompt = `Dans le cadre d'un examen TOEIC, quel mot permet de relier correctement les deux parties de la phrase et de former une phrase complète et logique au trou noté ------- dans le texte suivant? \n\n${title}\n\n${propositions.join(', ')}.`
+                    .replaceAll(' ', '_')
+                    .replaceAll('\n', '_n_')
+                    .replaceAll('?', '_question_mark_')
 
-        const response = await fetch('http://localhost:3000/' + prompt, { method: 'GET' })
-            .then((res) => res.json())
+                const response = await fetch('http://localhost:3000/' + prompt, { method: 'GET' })
+                    .then((res) => res.json())
 
-
-        const answer = /[A-Z]\./.exec(response.answer);
-        const index = propositions.findIndex((el) => el.includes(answer))
-
-        // console.log({ propositions, answer, index })
-        question
-            .querySelectorAll(selectors[type].propositions)[index]
-            ?.click()
+                // TODO => handle error
+                if (!response) return console.log("No response from server");
 
 
+                const answer = /[A-Z]\./.exec(response.answer);
+                const index = propositions.findIndex((el) => el.includes(answer))
+
+                // console.log({ propositions, answer, index })
+                question
+                    .querySelectorAll(selectors[type].propositions)[index]
+                    ?.click()
+
+            } catch (err) {
+                console.log("Error here sorry");
+                console.log(err);
+                return false;
+            }
+        } else {
+
+            const isFill = type === 'fill'
+
+            //? Scroll to the next question
+            const el = isFill ? question : document
+            if (isFill) el.scrollIntoView({ block: 'center' });
+            await sleep(1000);
+
+            el.querySelector(selectors[type].showAnswer).click();
+            await sleep(1000);
+
+            //? Pick answer + hide correction (for detection in text stuff)
+            question.getElementsByClassName(selectors[type].correctAnswer)[0]?.click();
+            el.querySelector(selectors[type].showAnswer).click();
+        }
+
+        return await sleep(420);
 
 
 
-        // const isFill = type === 'fill'
-
-        // //? Scroll to the next question
-        // const el = isFill ? question : document
-        // if (isFill) el.scrollIntoView({ block: 'center' });
-        // await sleep(1000);
-
-        // el.querySelector(selectors[type].showAnswer).click();
-        // await sleep(1000);
-
-        // //? Pick answer + hide correction (for detection in text stuff)
-        // question.getElementsByClassName(selectors[type].correctAnswer)[0]?.click();
-        // el.querySelector(selectors[type].showAnswer).click();
-
-        return await sleep(420);;
     }
 
     console.log('Starting...');
@@ -106,7 +119,7 @@ async function run()
     const questions = document.getElementsByClassName(selectors[type].questions);
 
     //? Wait for page load (a la louche, force a toi si t'as pas de co)
-    await sleep(1690);
+    await sleep(2100);
     console.log('Picking answers...');
 
     // for (let i = 0; i < 1; i++) {
